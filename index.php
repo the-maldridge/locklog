@@ -50,6 +50,16 @@ function chkPast($HISTTABLE, $DBCON, $res_id) {
   }
 }
 
+function addToHistory($HISTTABLE, $DBCON, $res_id) {
+  $SQL = "INSERT INTO $HISTTABLE (res_id, total_max, local_max) VALUES ('$res_id', 1, 1)";
+
+  if(!mysql_query($SQL, $DBCON)) {
+    die("Could not add to history database: ".mysql_error());
+  } else {
+    echo "Created new history record, this is lockout 1";
+  }
+}
+
 function updateHistory($HISTTABLE, $DBCON, $res_id) {
   $SQL="SELECT * FROM $HISTTABLE WHERE `res_id`=$res_id";
 
@@ -187,6 +197,7 @@ if(!empty($formState) && $formState=="submit") {
   //add that a lockout has occured
   addLockout($LOGTABLE, $DBCON, $PA_name, $bldg, $res_name, $res_id);
   if(chkPast($HISTTABLE, $DBCON, $res_id)) {
+    echo "resident exists in history";
     $lockoutnum=updateHistory($HISTTABLE, $DBCON, $res_id);
     if($lockoutnum>$EMAILTHRESHOLD) {
       if(($RLC=getRLC($bldg))==false) {
@@ -197,6 +208,9 @@ if(!empty($formState) && $formState=="submit") {
 	emailRLC($RLC,$res_name, $res_id, $SERVER, $PATH); 
       }
     }
+  } else {
+    echo "resident does not exist in history";
+    addToHistory($HISTTABLE, $DBCON, $res_id);
   }
 
   mysql_close($DBCON);
