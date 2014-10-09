@@ -109,8 +109,8 @@ function emailRLC($RLC, $resident, $res_id, $SERVER, $PATH, $EMAILSUBJECT) {
   $message=wordwrap($message,70);
 
   //actually send the message
-  if(mail($RLC["email"], $EMAILSUBJECT, $message, "From: noreply")) {
-    echo "mail accepted for delivery";
+  if(!mail($RLC["email"], $EMAILSUBJECT, $message, "From: noreply")) {
+    echo "A mailer issue was encountered, please report this to the admin.";
   }
 
 }
@@ -244,9 +244,12 @@ if(!empty($formState) && $formState=="submit") {
 	echo "This is lockout #".$lockoutnum." for ".$res_name.", ".$RLC["name"]." will been emailed.";
 	emailRLC($RLC,$res_name, $res_id, $SERVER, $PATH, $EMAILSUBJECT); 
       }
+    } else {
+      echo "Lockout Recorded, redirecting to main page...";
     }
   } else {
     addToHistory($HISTTABLE, $DBCON, $res_id);
+    echo "Lockout Recorded, redirecting to main page...";
   }
 
   mysql_close($DBCON);
