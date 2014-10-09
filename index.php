@@ -17,11 +17,13 @@ $formState=$_POST["formState"];
 
 if(empty($formState) || $formState=="Reset") {
   echo '<form action="index.php" method="post">';
-  echo '<input name="PA_name" type="text">';
-  echo '<input name="PA_id" type="text">';
-  echo '<input name="res_name" type="text">';
-  echo '<input name="res_id" type="text">';
-  echo '<input type="submit" name="formState" value="continue">';
+  echo '<table>';
+  echo '<tr><td>PA Name</td><td><input name="PA_name" type="text"></td></tr>';
+  echo '<tr><td>PA ID#</td><td><input name="PA_id" type="text"></td></td>';
+  echo '<tr><td>Resident Name</td><td><input name="res_name" type="text"></td></tr>';
+  echo '<tr><td>Resident ID#</td><td><input name="res_id" type="text"></td></tr>';
+  echo '<tr><td colspan="2"><center><input type="submit" name="formState" value="continue"></center></td></tr>';
+  echo '</table>';
 }
 
 if(!empty($formState) && $formState=="continue") {
