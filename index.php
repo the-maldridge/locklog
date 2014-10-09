@@ -8,6 +8,8 @@ $DBNAME="locklog";
 $LOGTABLE="lockouts";
 $HISTTABLE="history";
 $EMAILTHRESHOLD=4;
+$EMAILFROM="LockLog";
+$EMAILSUBJECT="Automated lockout report";
 
 function dblink($DBHOST, $DBUSER, $DBPASS, $DBNAME) {
 
@@ -31,8 +33,6 @@ function addLockout($LOGTABLE, $DBCON, $PA_name, $bldg, $res_name, $res_id) {
   if(!mysql_query($SQL, $DBCON)) {
     echo 'Failed to commit log entry, please use alternative log';
     die("Report this to the admin: " . mysql_error());
-  } else {
-    echo 'Commit Successful, redirecting to home...';
   }
 }
 
@@ -98,12 +98,19 @@ function getRLC($bldg) {
   return $rlcs[$bldg];
 }
 
-function emailRLC($RLC, $resident, $res_id, $SERVER, $PATH) {
+function emailRLC($RLC, $resident, $res_id, $SERVER, $PATH, $EMAILSUBJECT) {
   $message=$RLC["name"].", you are recieving this automated notice because ".$resident." (".$res_id.") has exceeded the threshold for lockouts.";
   $message=$message."\nYou may click on the link below to reset this resident's lockout meeting counter, the global count will be preserved.";
   $resetURL="http://".$SERVER."/".$PATH."index.php?reset=".$res_id;
   $message=$message."\n".$resetURL;
-  echo $message;
+
+  $message=wordwrap($message,70);
+
+  //actually send the message
+  if(mail($RLC["email"], $EMAILSUBJECT, $message, "From: noreply")) {
+    echo "mail accepted for delivery";
+  }
+
 }
 
 function resetCount($HISTTABLE, $DBCON, $res_id) {
@@ -225,7 +232,6 @@ if(!empty($formState) && $formState=="submit") {
   //add that a lockout has occured
   addLockout($LOGTABLE, $DBCON, $PA_name, $bldg, $res_name, $res_id);
   if(chkPast($HISTTABLE, $DBCON, $res_id)) {
-    echo "resident exists in history";
     $lockoutnum=updateHistory($HISTTABLE, $DBCON, $res_id);
     if($lockoutnum>$EMAILTHRESHOLD) {
       if(($RLC=getRLC($bldg))==false) {
@@ -233,11 +239,10 @@ if(!empty($formState) && $formState=="submit") {
 	echo "Additionally inform the RLC that this is the ".$lockoutnum." lockout for this resident";
       } else {
 	echo "This is lockout #".$lockoutnum." for ".$res_name.", ".$RLC["name"]." will been emailed.";
-	emailRLC($RLC,$res_name, $res_id, $SERVER, $PATH); 
+	emailRLC($RLC,$res_name, $res_id, $SERVER, $PATH, $EMAILSUBJECT); 
       }
     }
   } else {
-    echo "resident does not exist in history";
     addToHistory($HISTTABLE, $DBCON, $res_id);
   }
 
