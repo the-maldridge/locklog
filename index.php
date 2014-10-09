@@ -1,13 +1,15 @@
 <?php
+$DBUSER="deskworker";
+$DBPASS="foobar";
+$DBHOST="localhost";
+$DBNAME="locklog";
 $LOGTABLE="lockouts";
+$HISTTABLE="history";
+$EMAILTHRESHOLD=4;
 
-function dblink() {
-  $USERNAME="deskworker";
-  $PASSWORD="foobar";
-  $DBHOST="localhost";
-  $DBNAME="locklog";
+function dblink($DBHOST, $DBUSER, $DBPASS, $DBNAME) {
 
-  $DBCON = mysql_connect($DBHOST, $USERNAME, $PASSWORD, $DBNAME);
+  $DBCON = mysql_connect($DBHOST, $DBUSER, $DBPASS, $DBNAME);
 
   if (mysqli_connect_errno()) {
     echo 'Failed to connect to MySQL: " . mysqli_connect_error()';
@@ -22,20 +24,68 @@ function dblink() {
   return $DBCON;
 }
 
-function addLockout($PA_name, $bldg, $res_name, $res_id) {
+function addLockout($LOGTABLE, $DBCON, $PA_name, $bldg, $res_name, $res_id) {
   $SQL="INSERT INTO $LOGTABLE (PA_name, bldg, res_name, res_id) VALUES ('$PA_name', '$bldg', '$res_name', '$res_id')";
   if(!mysql_query($SQL, $DBCON)) {
     echo 'Failed to commit log entry, please use alternative log';
     die("Report this to the admin: " . mysql_error());
   } else {
     echo 'Commit Successful, redirecting to home...';
-    echo '<meta http-equiv="refresh" content="3">';
   }
 }
 
-function chkPast($res_id) {
+function chkPast($HISTTABLE, $DBCON, $res_id) {
   $SQL="SELECT * FROM $HISTTABLE WHERE `res_id`=$res_id";
+
+  if(!($result=mysql_query($SQL, $DBCON))) {
+    die("A serious error has occured, report this: ".mysql_error());
+  } else {
+    if(mysql_num_rows($result)>0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
+
+function updateHistory($HISTTABLE, $DBCON, $res_id) {
+  $SQL="SELECT * FROM $HISTTABLE WHERE `res_id`=$res_id";
+
+  if(!($result=mysql_query($SQL, $DBCON))) {
+    die("A serious error has occured, report this: ".mysql_error());
+  } else {
+    $row=mysql_fetch_array($result);
+    $tmax=$row["total_max"]+1;
+    $lmax=$row["local_max"]+1;
+    
+    $SQL='UPDATE '.$HISTTABLE.' SET total_max='.$tmax.', local_max='.$lmax.' WHERE `index`='.$row["index"];
+    mysql_query($SQL, $DBCON);
+
+    return $lmax;
+  }
+}
+
+function csvToArray($fname) {
+  if(!file_exists($fname) || !is_readable($fname)) {
+    return false;
+  }
+
+  $data=null;
+  if(($handle=fopen($fname, 'r')) !== false) {
+    while(($row=fgetcsv($handle, 1000, ',')) !== false) {
+      $data[$row[0]]["name"]=$row[1];
+      $data[$row[0]]["email"]=$row[2];
+    }
+    fclose($handle);
+  }
+  return $data;
+}
+
+function getRLC($bldg) {
+  $rlcs=csvToArray("rlcs.csv");
+  return $rlcs[$bldg];
+}
+
 ?>
 
 <html>
@@ -45,7 +95,9 @@ function chkPast($res_id) {
 <body>
 
 <?php
-$formState=$_POST["formState"];
+if(!empty($_POST["formState"])) {
+  $formState=$_POST["formState"];
+}
 
 if(empty($formState) || $formState=="Reset") {
   //if the form is empty or reset, show the initial page
@@ -101,14 +153,26 @@ if(!empty($formState) && $formState=="submit") {
   $res_id=$_POST["res_id"];
 
   //link to the database
-  $DBCON=dblink();
+  $DBCON=dblink($DBHOST, $DBUSER, $DBPASS, $DBNAME);
 
   //add that a lockout has occured
-  addLockout($PA_name, $bldg, $res_name, $res_id);
+  //addLockout($LOGTABLE, $DBCON, $PA_name, $bldg, $res_name, $res_id);
+  if(chkPast($HISTTABLE, $DBCON, $res_id)) {
+    $lockoutnum=updateHistory($HISTTABLE, $DBCON, $res_id);
+    if($lockoutnum>$EMAILTHRESHOLD) {
+      if(($RLC=getRLC($bldg))==false) {
+	echo "Could not load RLC information, please contact an admin.";
+	echo "Additionally inform the RLC that this is the ".$lockoutnum." lockout for this resident";
+      } else {
+	echo "This is lockout #".$lockoutnum." for ".$res_name.", ".$RLC["name"]." will been emailed.";
+	
+      }
+    }
+  }
 
-  //check the lockouts table for this person
-  if(chkPast($res_id))
   mysql_close($DBCON);
+
+  //echo '<meta http-equiv="refresh" content="3">';
 }
 ?>
 </body>
