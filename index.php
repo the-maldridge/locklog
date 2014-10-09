@@ -1,4 +1,6 @@
 <?php
+$SERVER="corespace.michaelwashere.tk";
+$PATH="/lockout/";
 $DBUSER="deskworker";
 $DBPASS="foobar";
 $DBHOST="localhost";
@@ -86,6 +88,23 @@ function getRLC($bldg) {
   return $rlcs[$bldg];
 }
 
+function emailRLC($RLC, $resident, $res_id, $SERVER, $PATH) {
+  $message=$RLC["name"].", you are recieving this automated notice because ".$resident." (".$res_id.") has exceeded the threshold for lockouts.";
+  $message=$message."\nYou may click on the link below to reset this resident's lockout meeting counter, the global count will be preserved.";
+  $resetURL="http://".$SERVER."/".$PATH."index.php?reset=".$res_id;
+  $message=$message."\n".$resetURL;
+  echo $message;
+}
+
+function resetCount($HISTTABLE, $DBCON, $res_id) {
+    $SQL='UPDATE '.$HISTTABLE.' SET local_max=0 WHERE `res_id`='.$res_id;
+    if(!mysql_query($SQL, $DBCON)) {
+      die("Could not reset count, contact an administrator: ".mysql_error());
+    } else {
+      echo "Successful Reset";
+    }
+}  
+
 ?>
 
 <html>
@@ -95,6 +114,16 @@ function getRLC($bldg) {
 <body>
 
 <?php
+
+if(!empty($_GET["reset"])) {
+  //quick override to reset a count
+  $res_id=$_GET["reset"];
+  $DBCON=dblink($DBHOST, $DBUSER, $DBPASS, $DBNAME);
+  resetCount($HISTTABLE, $DBCON, $res_id);
+  mysql_close($DBCON);
+  die(); //die because we don't want to parse anything else
+}
+
 if(!empty($_POST["formState"])) {
   $formState=$_POST["formState"];
 }
@@ -156,7 +185,7 @@ if(!empty($formState) && $formState=="submit") {
   $DBCON=dblink($DBHOST, $DBUSER, $DBPASS, $DBNAME);
 
   //add that a lockout has occured
-  //addLockout($LOGTABLE, $DBCON, $PA_name, $bldg, $res_name, $res_id);
+  addLockout($LOGTABLE, $DBCON, $PA_name, $bldg, $res_name, $res_id);
   if(chkPast($HISTTABLE, $DBCON, $res_id)) {
     $lockoutnum=updateHistory($HISTTABLE, $DBCON, $res_id);
     if($lockoutnum>$EMAILTHRESHOLD) {
@@ -165,7 +194,7 @@ if(!empty($formState) && $formState=="submit") {
 	echo "Additionally inform the RLC that this is the ".$lockoutnum." lockout for this resident";
       } else {
 	echo "This is lockout #".$lockoutnum." for ".$res_name.", ".$RLC["name"]." will been emailed.";
-	
+	emailRLC($RLC,$res_name, $res_id, $SERVER, $PATH); 
       }
     }
   }
