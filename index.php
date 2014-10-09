@@ -85,8 +85,10 @@ function csvToArray($fname) {
   $data=null;
   if(($handle=fopen($fname, 'r')) !== false) {
     while(($row=fgetcsv($handle, 1000, ',')) !== false) {
-      $data[$row[0]]["name"]=$row[1];
-      $data[$row[0]]["email"]=$row[2];
+      $data[$row[0]]["key"]=$row[0];
+      $data[$row[0]]["bldg"]=$row[1];
+      $data[$row[0]]["name"]=$row[2];
+      $data[$row[0]]["email"]=$row[3];
     }
     fclose($handle);
   }
@@ -94,7 +96,7 @@ function csvToArray($fname) {
 }
 
 function getRLC($bldg) {
-  $rlcs=csvToArray("rlcs.csv");
+  $rlcs=csvToArray("buildings.csv");
   return $rlcs[$bldg];
 }
 
@@ -183,10 +185,11 @@ if(empty($formState) || $formState=="Reset") {
 
   //building
   echo '<tr><td>Building</td><td><select name="bldg">';
-  $buildings=file("buildings.txt");
-  foreach($buildings as $bldg => $buildingName) {
-    $buildingName=trim($buildingName);
-    echo '<option value="'.$buildingName.'">'.$buildingName.'</option>';
+  $buildings=csvToArray("buildings.csv");
+  foreach($buildings as $buildingInfo) {
+    $buildingName=trim($buildingInfo["bldg"]);
+    $buildingKey=trim($buildingInfo["key"]);
+    echo '<option value="'.$buildingKey.'">'.$buildingName.'</option>';
   }
   echo '</select></td></td>';
 
