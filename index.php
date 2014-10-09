@@ -21,6 +21,21 @@ function dblink() {
 
   return $DBCON;
 }
+
+function addLockout($PA_name, $bldg, $res_name, $res_id) {
+  $SQL="INSERT INTO $LOGTABLE (PA_name, bldg, res_name, res_id) VALUES ('$PA_name', '$bldg', '$res_name', '$res_id')";
+  if(!mysql_query($SQL, $DBCON)) {
+    echo 'Failed to commit log entry, please use alternative log';
+    die("Report this to the admin: " . mysql_error());
+  } else {
+    echo 'Commit Successful, redirecting to home...';
+    echo '<meta http-equiv="refresh" content="3">';
+  }
+}
+
+function chkPast($res_id) {
+  $SQL="SELECT * FROM $HISTTABLE WHERE `res_id`=$res_id";
+}
 ?>
 
 <html>
@@ -33,27 +48,43 @@ function dblink() {
 $formState=$_POST["formState"];
 
 if(empty($formState) || $formState=="Reset") {
+  //if the form is empty or reset, show the initial page
   echo '<form action="index.php" method="post">';
   echo '<table>';
+
+  //name
   echo '<tr><td>PA Name</td><td><input name="PA_name" type="text"></td></tr>';
-  echo '<tr><td>PA ID#</td><td><input name="PA_id" type="text"></td></td>';
+
+  //building
+  echo '<tr><td>Building</td><td><select name="bldg">';
+  $buildings=file("buildings.txt");
+  foreach($buildings as $bldg => $buildingName) {
+    $buildingName=trim($buildingName);
+    echo '<option value="'.$buildingName.'">'.$buildingName.'</option>';
+  }
+  echo '</select></td></td>';
+
+  //resident info
   echo '<tr><td>Resident Name</td><td><input name="res_name" type="text"></td></tr>';
   echo '<tr><td>Resident ID#</td><td><input name="res_id" type="text"></td></tr>';
+
   echo '<tr><td colspan="2"><center><input type="submit" name="formState" value="continue"></center></td></tr>';
   echo '</table>';
 }
 
 if(!empty($formState) && $formState=="continue") {
+  //if things have been entered, confirm and continue
   $PA_name=$_POST["PA_name"];
-  $PA_id=$_POST["PA_id"];
+  $bldg=$_POST["bldg"];
   $res_name=$_POST["res_name"];
   $res_id=$_POST["res_id"];
 
   echo 'Are you ' . $PA_name . ' performing a lockout for ' . $res_name . '?';
 
+  //form to grab the values before sending them back
   echo '<form action="index.php" method="post">';
   echo '<input name="PA_name" type="hidden" value="'.$PA_name.'">';
-  echo '<input name="PA_id" type="hidden" value="'.$PA_id.'">';
+  echo '<input name="bldg" type="hidden" value="'.$bldg.'">';
   echo '<input name="res_name" type="hidden" value="'.$res_name.'">';
   echo '<input name="res_id" type="hidden" value="'.$res_id.'">';
   echo '<input name="formState" type="hidden" value="submit">';
@@ -62,22 +93,21 @@ if(!empty($formState) && $formState=="continue") {
 }
 
 if(!empty($formState) && $formState=="submit") {
+  //data has been verified, time to submit
+
   $PA_name=$_POST["PA_name"];
-  $PA_id=$_POST["PA_id"];
+  $bldg=$_POST["bldg"];
   $res_name=$_POST["res_name"];
   $res_id=$_POST["res_id"];
 
+  //link to the database
   $DBCON=dblink();
 
-  $SQL="INSERT INTO $LOGTABLE (PA_name, PA_id, res_name, res_id) VALUES ('$PA_name', '$PA_id', '$res_name', '$res_id')";
-  if(!mysql_query($SQL, $DBCON)) {
-    echo 'Failed to commit log entry, please use alternative log';
-    die("Report this to the admin: " . mysql_error());
-  } else {
-    echo 'Commit Successful, redirecting to home...';
-    echo '<meta http-equiv="refresh" content="3">';
-  }
+  //add that a lockout has occured
+  addLockout($PA_name, $bldg, $res_name, $res_id);
 
+  //check the lockouts table for this person
+  if(chkPast($res_id))
   mysql_close($DBCON);
 }
 ?>
