@@ -1,9 +1,26 @@
 <?php
-$USERNAME="deskworker";
-$PASSWORD="foobar";
-$DBHOST="localhost";
-$DBNAME="locklog";
-$DTNAME="lockouts";
+$LOGTABLE="lockouts";
+
+function dblink() {
+  $USERNAME="deskworker";
+  $PASSWORD="foobar";
+  $DBHOST="localhost";
+  $DBNAME="locklog";
+
+  $DBCON = mysql_connect($DBHOST, $USERNAME, $PASSWORD, $DBNAME);
+
+  if (mysqli_connect_errno()) {
+    echo 'Failed to connect to MySQL: " . mysqli_connect_error()';
+    echo '<br />No use continuing without the database server...';
+    die();
+  } 
+  
+  if(!mysql_query("USE $DBNAME")) {
+    die("did not select database " . mysql_error());
+  }
+
+  return $DBCON;
+}
 ?>
 
 <html>
@@ -50,19 +67,9 @@ if(!empty($formState) && $formState=="submit") {
   $res_name=$_POST["res_name"];
   $res_id=$_POST["res_id"];
 
-  $DBCON = mysql_connect($DBHOST, $USERNAME, $PASSWORD, $DBNAME);
+  $DBCON=dblink();
 
-  if (mysqli_connect_errno()) {
-    echo 'Failed to connect to MySQL: " . mysqli_connect_error()';
-    echo '<br />No use continuing without the database server...';
-    die();
-  } 
-  
-  if(!mysql_query("USE $DBNAME")) {
-    die("did not select database " . mysql_error());
-  }
-
-  $SQL="INSERT INTO $DTNAME (PA_name, PA_id, res_name, res_id) VALUES ('$PA_name', '$PA_id', '$res_name', '$res_id')";
+  $SQL="INSERT INTO $LOGTABLE (PA_name, PA_id, res_name, res_id) VALUES ('$PA_name', '$PA_id', '$res_name', '$res_id')";
   if(!mysql_query($SQL, $DBCON)) {
     echo 'Failed to commit log entry, please use alternative log';
     die("Report this to the admin: " . mysql_error());
@@ -70,6 +77,8 @@ if(!empty($formState) && $formState=="submit") {
     echo 'Commit Successful, redirecting to home...';
     echo '<meta http-equiv="refresh" content="3">';
   }
+
+  mysql_close($DBCON);
 }
 ?>
 </body>
