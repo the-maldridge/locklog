@@ -120,9 +120,37 @@ function resetCount($HISTTABLE, $DBCON, $res_id) {
 <html>
 <head>
 <title>Lockout Log</title>
+<style>
+body {
+    background-color: grey;
+}
+
+#outer {
+    width: 100%;
+    height: 100%;
+    display: table;
+    position: absolute;
+}
+
+#inner {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+#content {
+    margin-left: auto;
+    margin-right: auto;
+    background-color: white;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px 10px white;
+}
+</style>
 </head>
 <body>
-
+<div id="outer">
+<div id="inner">
+<div id="content" style="width:400px;">
 <?php
 
 if(!empty($_GET["reset"])) {
@@ -218,5 +246,9 @@ if(!empty($formState) && $formState=="submit") {
   //echo '<meta http-equiv="refresh" content="3">';
 }
 ?>
+
+</div>
+</div>
+</div>
 </body>
 </html>
