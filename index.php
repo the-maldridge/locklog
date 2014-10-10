@@ -224,10 +224,10 @@ if(!empty($formState) && $formState=="continue") {
 if(!empty($formState) && $formState=="submit") {
   //data has been verified, time to submit
 
-  $PA_name=$_POST["PA_name"];
-  $bldg=$_POST["bldg"];
-  $res_name=$_POST["res_name"];
-  $res_id=$_POST["res_id"];
+  $PA_name=mysql_real_excape_string($_POST["PA_name"]);
+  $bldg=mysql_real_escape_string($_POST["bldg"]);
+  $res_name=mysql_real_escape_string($_POST["res_name"]);
+  $res_id=mysql_real_escape_string($_POST["res_id"]);
 
   //link to the database
   $DBCON=dblink($DBHOST, $DBUSER, $DBPASS, $DBNAME);
