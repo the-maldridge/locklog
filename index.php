@@ -55,8 +55,6 @@ function addToHistory($HISTTABLE, $DBCON, $res_id) {
 
   if(!mysql_query($SQL, $DBCON)) {
     die("Could not add to history database: ".mysql_error());
-  } else {
-    echo "Created new history record, this is lockout 1";
   }
 }
 
@@ -224,13 +222,13 @@ if(!empty($formState) && $formState=="continue") {
 if(!empty($formState) && $formState=="submit") {
   //data has been verified, time to submit
 
-  $PA_name=mysql_real_excape_string($_POST["PA_name"]);
+  //link to the database
+  $DBCON=dblink($DBHOST, $DBUSER, $DBPASS, $DBNAME);
+
+  $PA_name=mysql_real_escape_string($_POST["PA_name"]);
   $bldg=mysql_real_escape_string($_POST["bldg"]);
   $res_name=mysql_real_escape_string($_POST["res_name"]);
   $res_id=mysql_real_escape_string($_POST["res_id"]);
-
-  //link to the database
-  $DBCON=dblink($DBHOST, $DBUSER, $DBPASS, $DBNAME);
 
   //add that a lockout has occured
   addLockout($LOGTABLE, $DBCON, $PA_name, $bldg, $res_name, $res_id);
