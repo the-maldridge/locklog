@@ -252,7 +252,7 @@ if(!empty($formState) && $formState=="submit") {
 
   mysql_close($DBCON);
 
-  echo '<meta http-equiv="refresh" content="3">';
+  //  echo '<meta http-equiv="refresh" content="3">';
 }
 ?>
 
