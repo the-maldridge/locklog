@@ -20,6 +20,7 @@ SET time_zone = "+00:00";
 -- Database: `locklog`
 --
 
+CREATE DATABASE IF NOT EXISTS `locklog`;
 -- --------------------------------------------------------
 
 --
