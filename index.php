@@ -37,6 +37,7 @@ body {
 <div id="outer">
 <div id="inner">
 <div id="content" style="width:400px;">
+<center>
 <?php
 
 if(!empty($_GET["reset"])) {
@@ -132,7 +133,7 @@ if(!empty($formState) && $formState=="submit") {
   //  echo '<meta http-equiv="refresh" content="3">';
 }
 ?>
-
+</center>
 </div>
 </div>
 </div>
