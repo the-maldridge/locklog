@@ -32,21 +32,21 @@ $config = getConfig("buildings.json");
 
 if(empty($formState) || $formState=="Reset") {
   //if the form is empty or reset, show the initial page
-  echo '<form action="index.php" method="post">';
-  echo '<table>';
+  echo "<form action='index.php' method='post'>";
+  echo "<table>";
 
   //name
-  echo '<tr><td>PA Name</td><td><input name="PA_name" type="text"></td></tr>';
+  echo "<tr><td>PA Name</td><td><input name='PA_name' type='text'></td></tr>";
 
   //building
   getBuilding($config);
 
   //resident info
-  echo '<tr><td>Resident Name</td><td><input name="res_name" type="text"></td></tr>';
-  echo '<tr><td>Resident ID#</td><td><input name="res_id" type="text"></td></tr>';
+  echo "<tr><td>Resident Name</td><td><input name='res_name' type='text'></td></tr>";
+  echo "<tr><td>Resident ID#</td><td><input name='res_id' type='text'></td></tr>";
 
-  echo '<tr><td colspan="2"><center><input type="submit" name="formState" value="continue"></center></td></tr>';
-  echo '</table>';
+  echo "<tr><td colspan='2'><center><input type='submit' name='formState' value='continue'></center></td></tr>";
+  echo "</table>";
 }
 
 if(!empty($formState) && $formState=="continue") {
@@ -59,17 +59,17 @@ if(!empty($formState) && $formState=="continue") {
   //set persistent building identifier
   setcookie("bldg", $bldg, time() + (86400 * 30), "/");
 
-  echo 'Are you ' . $PA_name . ' performing a lockout for ' . $res_name . '?';
+  echo "Are you $PA_name performing a lockout for $res_name?";
 
   //form to grab the values before sending them back
-  echo '<form action="index.php" method="post">';
-  echo '<input name="PA_name" type="hidden" value="'.$PA_name.'">';
-  echo '<input name="bldg" type="hidden" value="'.$bldg.'">';
-  echo '<input name="res_name" type="hidden" value="'.$res_name.'">';
-  echo '<input name="res_id" type="hidden" value="'.$res_id.'">';
-  echo '<input name="formState" type="hidden" value="submit">';
-  echo '<input type="submit" value="Confirm">';
-  echo '<input type="submit" name="formState" value="Reset">';
+  echo "<form action='index.php' method='post'>";
+  echo "<input name='PA_name' type='hidden' value='$PA_name'>";
+  echo "<input name='bldg' type='hidden' value='$bldg'>";
+  echo "<input name='res_name' type='hidden' value='$res_name'>";
+  echo "<input name='res_id' type='hidden' value='$res_id'>";
+  echo "<input name='formState' type='hidden' value='submit'>";
+  echo "<input type='submit' value='Confirm'>";
+  echo "<input type='submit' name='formState' value='Reset'>";
 }
 
 if(!empty($formState) && $formState=="submit") {
