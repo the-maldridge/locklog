@@ -52,6 +52,8 @@ if(!empty($_POST["formState"])) {
   $formState=$_POST["formState"];
 }
 
+$config = getConfig("buildings.json");
+
 if(empty($formState) || $formState=="Reset") {
   //if the form is empty or reset, show the initial page
   echo '<form action="index.php" method="post">';
@@ -62,11 +64,8 @@ if(empty($formState) || $formState=="Reset") {
 
   //building
   echo '<tr><td>Building</td><td><select name="bldg">';
-  $buildings=csvToArray("buildings.csv");
-  foreach($buildings as $buildingInfo) {
-    $buildingName=trim($buildingInfo["bldg"]);
-    $buildingKey=trim($buildingInfo["key"]);
-    echo '<option value="'.$buildingKey.'">'.$buildingName.'</option>';
+  foreach($config["buildings"] as $buildingKey => $buildingInfo) {
+    echo '<option value="'.$buildingKey.'">'.$buildingInfo["disptext"].'</option>';
   }
   echo '</select></td></td>';
 
@@ -114,12 +113,12 @@ if(!empty($formState) && $formState=="submit") {
   if(chkPast($HISTTABLE, $DBCON, $res_id)) {
     $lockoutnum=updateHistory($HISTTABLE, $DBCON, $res_id);
     if($lockoutnum>$EMAILTHRESHOLD) {
-      if(($RLC=getRLC($bldg))==false) {
+      if((($RLC=$config["buildings"][$bldg]["coord"]) && ($RLC_email=$config["buildings"][$bldg]["coordemail"]))==false) {
 	echo "Could not load RLC information, please contact an admin.";
 	echo "Additionally inform the RLC that this is the ".$lockoutnum." lockout for this resident";
       } else {
-	echo "This is lockout #".$lockoutnum." for ".$res_name.", ".$RLC["name"]." will been emailed.";
-	emailRLC($RLC,$res_name, $res_id, $SERVER, $PATH, $EMAILSUBJECT); 
+	echo "This is lockout #".$lockoutnum." for ".$res_name.", ".$RLC." will be emailed.";
+	emailRLC($RLC, $RLC_email, $res_name, $res_id, $SERVER, $PATH, $EMAILSUBJECT); 
       }
     } else {
       echo "Lockout Recorded, redirecting to main page...";

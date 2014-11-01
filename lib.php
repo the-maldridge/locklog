@@ -63,31 +63,19 @@ function updateHistory($HISTTABLE, $DBCON, $res_id) {
   }
 }
 
-function csvToArray($fname) {
-  if(!file_exists($fname) || !is_readable($fname)) {
-    return false;
+function getConfig($path) {
+  $file = fopen($path, 'r');
+  if($file == false) {
+    die("Failed to get config");
   }
-
-  $data=null;
-  if(($handle=fopen($fname, 'r')) !== false) {
-    while(($row=fgetcsv($handle, 1000, ',')) !== false) {
-      $data[$row[0]]["key"]=$row[0];
-      $data[$row[0]]["bldg"]=$row[1];
-      $data[$row[0]]["name"]=$row[2];
-      $data[$row[0]]["email"]=$row[3];
-    }
-    fclose($handle);
-  }
+  $json = fread($file, filesize($path));
+  $data = json_decode($json, true);
   return $data;
 }
 
-function getRLC($bldg) {
-  $rlcs=csvToArray("buildings.csv");
-  return $rlcs[$bldg];
-}
 
-function emailRLC($RLC, $resident, $res_id, $SERVER, $PATH, $EMAILSUBJECT) {
-  $message=$RLC["name"].", you are recieving this automated notice because ".$resident." (".$res_id.") has exceeded the threshold for lockouts.";
+function emailRLC($RLC, $RLC_email, $resident, $res_id, $SERVER, $PATH, $EMAILSUBJECT) {
+  $message=$RLC.", you are recieving this automated notice because ".$resident." (".$res_id.") has exceeded the threshold for lockouts.";
   $message=$message."\nYou may click on the link below to reset this resident's lockout meeting counter, the global count will be preserved.";
   $resetURL="http://".$SERVER."/".$PATH."index.php?reset=".$res_id;
   $message=$message."\n".$resetURL;
@@ -95,7 +83,7 @@ function emailRLC($RLC, $resident, $res_id, $SERVER, $PATH, $EMAILSUBJECT) {
   $message=wordwrap($message,70);
 
   //actually send the message
-  if(!mail($RLC["email"], $EMAILSUBJECT, $message, "From: noreply")) {
+  if(!mail($RLC_email, $EMAILSUBJECT, $message, "From: noreply")) {
     echo "A mailer issue was encountered, please report this to the admin.";
   }
 

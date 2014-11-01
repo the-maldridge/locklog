@@ -1,0 +1,12 @@
+{
+    "buildings": {
+	"RHW": {
+	    "disptext":"West",
+	    "coord":"Michael Aldridge",
+	    "coordemail":"aldridge.mac@gmail.com"
+	}
+    },
+    "common": {
+	"threshold":3
+    }
+}
