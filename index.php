@@ -6,32 +6,7 @@ require("config.php");
 <html>
 <head>
 <title>Lockout Log</title>
-<style>
-body {
-    background-color: grey;
-}
-
-#outer {
-    width: 100%;
-    height: 100%;
-    display: table;
-    position: absolute;
-}
-
-#inner {
-    display: table-cell;
-    vertical-align: middle;
-}
-
-#content {
-    margin-left: auto;
-    margin-right: auto;
-    background-color: white;
-    padding: 5px;
-    border-radius: 5px;
-    box-shadow: 0px 0px 10px 10px white;
-}
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div id="outer">
