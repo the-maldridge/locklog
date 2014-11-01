@@ -63,11 +63,7 @@ if(empty($formState) || $formState=="Reset") {
   echo '<tr><td>PA Name</td><td><input name="PA_name" type="text"></td></tr>';
 
   //building
-  echo '<tr><td>Building</td><td><select name="bldg">';
-  foreach($config["buildings"] as $buildingKey => $buildingInfo) {
-    echo '<option value="'.$buildingKey.'">'.$buildingInfo["disptext"].'</option>';
-  }
-  echo '</select></td></td>';
+  getBuilding($config);
 
   //resident info
   echo '<tr><td>Resident Name</td><td><input name="res_name" type="text"></td></tr>';
@@ -83,6 +79,9 @@ if(!empty($formState) && $formState=="continue") {
   $bldg=$_POST["bldg"];
   $res_name=$_POST["res_name"];
   $res_id=$_POST["res_id"];
+
+  //set persistent building identifier
+  setcookie("bldg", $bldg, time() + (86400 * 30), "/");
 
   echo 'Are you ' . $PA_name . ' performing a lockout for ' . $res_name . '?';
 

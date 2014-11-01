@@ -88,6 +88,18 @@ function emailRLC($RLC, $RLC_email, $resident, $res_id, $SERVER, $PATH, $EMAILSU
   }
 
 }
+function getBuilding($config) {
+  if(!isset($_COOKIE["bldg"])) {
+    echo '<tr><td>Building</td><td><select name="bldg">';
+    foreach($config["buildings"] as $buildingKey => $buildingInfo) {
+      echo '<option value="'.$buildingKey.'">'.$buildingInfo["disptext"].'</option>';
+    }
+    echo '</select></td></tr>';
+  } else {
+    $bldg=$_COOKIE["bldg"];
+    echo "<input name='bldg' type='hidden' value='$bldg'>";
+  }
+}
 
 function resetCount($HISTTABLE, $DBCON, $res_id) {
     $SQL='UPDATE '.$HISTTABLE.' SET local_max=0 WHERE `res_id`='.$res_id;
