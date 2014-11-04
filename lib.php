@@ -88,8 +88,8 @@ function emailRLC($RLC, $RLC_email, $resident, $res_id, $SERVER, $PATH, $EMAILSU
   }
 
 }
-function getBuilding($config) {
-  if(!isset($_COOKIE["bldg"])) {
+function getBuilding($config, $prompt) {
+  if(!isset($_COOKIE["bldg"]) || $prompt) {
     echo '<tr><td>Building</td><td><select name="bldg">';
     foreach($config["buildings"] as $buildingKey => $buildingInfo) {
       echo '<option value="'.$buildingKey.'">'.$buildingInfo["disptext"].'</option>';
