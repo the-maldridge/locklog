@@ -1,15 +1,19 @@
 <?php
 require("lib.php");
-
+require("config.php");
 $config = getConfig("buildings.json");
 ?>
 
 <html>
 <head>
 <title>LockLog Query</title>
- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
 </head>
 <body>
+
+<?php
+  if(!isset($_GET["run"])) {
+?>
 <table>
 <tr><td colspan="2">Filter By:</td></tr>
   <tr>
@@ -80,6 +84,37 @@ $config = getConfig("buildings.json");
 
   </form>  
   </table>
+<?php
+  } else {
+    $dbcon = dblink($DBHOST, $DBUSER, $DBPASS, $DBNAME);
+    $SQL = "SELECT * FROM $LOGTABLE WHERE ";
+
+    if(!empty($_GET["bldg"])) {
+      $bldg=mysql_real_escape_string($_GET["bldg"]);
+      $SQL = $SQL."bldg='$bldg' AND ";
+    }
+    if(!empty($_GET["name"])) {
+      $name=mysql_real_escape_string($_GET["name"]);
+      $SQL = $SQL."res_name='$name' AND ";
+    }
+    if(!empty($_GET["id"])) {
+      $id=mysql_real_escape_string($_GET["id"]);
+      $SQL = $SQL."res_id='$id' AND ";
+    }
+    if(!empty($_GET["dateAfter"])) {
+      $dateAfter=mysql_real_escape_string($_GET["dateAfter"]);
+      $SQL = $SQL."time>='$dateAfter' AND ";
+    }
+    if(!empty($_GET["dateBefore"])) {
+      $dateBefore=mysql_real_escape_string($_GET["dateBefore"]);
+      $SQL = $SQL."time<='$dateBefore' AND ";
+    }
+    $SQL = $SQL."1=1";
+    echo $SQL;
+
+    mysql_close($dbcon);
+  }
+?>
   </body>
   <script src='queryHelpers.js'></script>
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
