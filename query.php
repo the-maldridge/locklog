@@ -133,6 +133,14 @@ $config = getConfig("buildings.json");
 $(function() {
  $("#datepicker1").datepicker({dateFormat:"yy-mm-dd"});
  $("#datepicker2").datepicker({dateFormat:"yy-mm-dd"});
+
+ var checkboxes = document.getElementsByTagName('input');
+
+ for (var i=0; i<checkboxes.length; i++)  {
+   if (checkboxes[i].type == 'checkbox')   {
+     checkboxes[i].checked = false;
+   }
+ }
 });
 </script>
 </body>
