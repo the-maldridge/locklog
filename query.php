@@ -111,15 +111,22 @@ $config = getConfig("buildings.json");
       $SQL = $SQL."time<='$dateBefore' AND ";
     }
     $SQL = $SQL."1=1";
-    echo $SQL;
-
+  
     if(!($result=mysql_query($SQL, $dbcon))) {
       mysql_close($dbcon);
       die("A serious error occured while running $SQL, report this: ".mysql_error());
     } else {
-      echo "<table cellpadding='4'>";
+      echo "<table cellpadding='4' border='0' style='text-align: center;'>";
+      echo "<tr><th>Building</th><th>Resident</th><th>Resident ID</th><th>PA</th></tr>";
+      $rowNum=0;
       while($arr = mysql_fetch_array($result)) {
-	echo "<tr><td>".$arr['bldg']."</td><td>".$arr['res_name']."</td><td>".$arr['res_id']."</td><td>".$arr['PA_name']."</td></tr>";
+	if($rowNum%2) {
+	  echo "<tr style='background-color: #9FF781;'>";
+	} else {
+	  echo "<tr>";
+	}
+	echo "<td>".$arr['bldg']."</td><td>".$arr['res_name']."</td><td>".$arr['res_id']."</td><td>".$arr['PA_name']."</td></tr>";
+	$rowNum++;
       }
       echo "</table>";
     }
