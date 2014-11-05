@@ -18,32 +18,32 @@ $config = getConfig("buildings.json");
 <tr><td colspan="2">Filter By:</td></tr>
   <tr>
   <td>Building:</td>
-  <td><input type='checkbox' id='bldg' onclick='toggleCollapse("bldg", "bldgHTML")'></td>
+  <td><input type='checkbox' id='bldg' onclick='toggleCollapse("bldg", "bldgHTML", "bldgSelect", "")'></td>
   </tr>
   
   <tr>
   <td>Name:</td>
-  <td><input type='checkbox' id='name' onclick='toggleCollapse("name", "nameHTML")'></td>
+  <td><input type='checkbox' id='name' onclick='toggleCollapse("name", "nameHTML", "nameBox", "")'></td>
   </tr>
   
   <tr>
   <td>UTD ID:</td>
-  <td><input type='checkbox' id='id' onclick='toggleCollapse("id", "idHTML")'></td>
+  <td><input type='checkbox' id='id' onclick='toggleCollapse("id", "idHTML", "idBox", "")'></td>
   </tr>
   
   <tr>
   <td>PA:</td>
-  <td><input type='checkbox' id='pa' onclick='toggleCollapse("pa", "paHTML")'></td>
+  <td><input type='checkbox' id='pa' onclick='toggleCollapse("pa", "paHTML", "paBox", "")'></td>
   </tr>
   
   <tr>
   <td>After:</td>
-  <td><input type='checkbox' id='dateAfter' onclick='toggleCollapse("dateAfter", "dateAfterHTML")'></td>
+  <td><input type='checkbox' id='dateAfter' onclick='toggleCollapse("dateAfter", "dateAfterHTML", "datepicker1", "")'></td>
   </tr>
   
   <tr>
   <td>Before:</td>
-  <td><input type='checkbox' id='dateBefore' onclick='toggleCollapse("dateBefore", "dateBeforeHTML")'></td>
+  <td><input type='checkbox' id='dateBefore' onclick='toggleCollapse("dateBefore", "dateBeforeHTML", "datepicker2", "")'></td>
   </tr>
   
   <table>
@@ -54,17 +54,17 @@ $config = getConfig("buildings.json");
   
   <tr id='nameHTML' style='visibility: collapse;'>
   <td>Name:</td>
-  <td><input type='text' name='name'></input></td>
+  <td><input type='text' id='nameBox' name='name'></input></td>
   </tr>
   
   <tr id='idHTML' style='visibility: collapse;'>
   <td>UTD ID:</td>
-  <td><input type='text' name='id'></input></td>
+  <td><input type='text' id='idBox' name='id'></input></td>
   </tr>
   
   <tr id='paHTML' style='visibility: collapse;'>
   <td>PA Name:</td>
-  <td><input type='text' name='pa'></input></td>
+  <td><input type='text' id='paBox' name='pa'></input></td>
   </tr>
   
   <tr id='dateAfterHTML' style='visibility: collapse;'>
@@ -112,6 +112,16 @@ $config = getConfig("buildings.json");
     $SQL = $SQL."1=1";
     echo $SQL;
 
+    if(!($result=mysql_query($SQL, $dbcon))) {
+      mysql_close($dbcon);
+      die("A serious error occured while running $SQL, report this: ".mysql_error());
+    } else {
+      echo "<table cellpadding='4'>";
+      while($arr = mysql_fetch_array($result)) {
+	echo "<tr><td>".$arr['bldg']."</td><td>".$arr['res_name']."</td><td>".$arr['res_id']."</td><td>".$arr['PA_name']."</td></tr>";
+      }
+      echo "</table>";
+    }
     mysql_close($dbcon);
   }
 ?>
