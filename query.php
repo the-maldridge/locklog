@@ -117,7 +117,7 @@ $config = getConfig("buildings.json");
       die("A serious error occured while running $SQL, report this: ".mysql_error());
     } else {
       echo "<table cellpadding='4' border='0' style='text-align: center;'>";
-      echo "<tr><th>Building</th><th>Resident</th><th>Resident ID</th><th>PA</th></tr>";
+      echo "<tr><th>Building</th><th>Resident</th><th>Resident ID</th><th>PA</th><th>Date/Time</th></tr>";
       $rowNum=0;
       while($arr = mysql_fetch_array($result)) {
 	if($rowNum%2) {
@@ -125,7 +125,11 @@ $config = getConfig("buildings.json");
 	} else {
 	  echo "<tr>";
 	}
-	echo "<td>".$arr['bldg']."</td><td>".$arr['res_name']."</td><td>".$arr['res_id']."</td><td>".$arr['PA_name']."</td></tr>";
+	echo "<td>".$arr['bldg']."</td>";
+	echo "<td>".$arr['res_name']."</td>";
+	echo "<td>".$arr['res_id']."</td>";
+	echo "<td>".$arr['PA_name']."</td>";
+	echo "<td>".$arr["time"]."</td></tr>";
 	$rowNum++;
       }
       echo "</table>";
@@ -149,6 +153,15 @@ $(function() {
    }
  }
 });
+
+function toggleCollapse(checkbox, id, inner, offState) {
+    if(document.getElementById(checkbox).checked) {
+	document.getElementById(id).style.visibility="visible"
+    } else {
+	document.getElementById(id).style.visibility="collapse"
+	document.getElementById(inner).value=offState
+    }
+}
 </script>
 </body>
 </html>
