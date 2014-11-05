@@ -114,5 +114,6 @@ if(!empty($formState) && $formState=="submit") {
 </div>
 </div>
 </div>
+<?php require("footer.php"); ?>
 </body>
 </html>

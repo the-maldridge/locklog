@@ -1,0 +1,1 @@
+<div style="text-align:center; position:absolute; bottom:15px; width:100%; font-size:8px;">Copyright &copy <?php echo date("Y"); ?> Michael Aldridge - All Rights Reserved</div>
