@@ -40,7 +40,7 @@ if(empty($formState) || $formState=="Reset") {
 
   //building
   echo '<tr>';
-  getBuilding($config, false);
+  getBuilding($config, isset($_GET["bldgprmpt"]));
   echo '</tr>';
 
   //resident info
