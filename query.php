@@ -45,9 +45,10 @@ $config = getConfig("buildings.json");
   <td>Before:</td>
   <td><input type='checkbox' id='dateBefore' onclick='toggleCollapse("dateBefore", "dateBeforeHTML", "datepicker2", "")'></td>
   </tr>
-  
+</table>
+
+  <form method="GET" action="query.php">   
   <table>
-  <form method="GET" action="query.php"> 
   <tr id='bldgHTML' style='visibility: collapse;'>
   <?php getBuilding($config, true); ?>
   </tr>
@@ -82,8 +83,8 @@ $config = getConfig("buildings.json");
   <td colspan='2'><input type='submit' name='run' value='Run Query'></td>
   </tr>
 
-  </form>  
   </table>
+  </form>  
 <?php
   } else {
     $dbcon = dblink($DBHOST, $DBUSER, $DBPASS, $DBNAME);
@@ -125,14 +126,14 @@ $config = getConfig("buildings.json");
     mysql_close($dbcon);
   }
 ?>
-  </body>
-  <script src='queryHelpers.js'></script>
-  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
-  <script>
-  $(function() {
-      $("#datepicker1").datepicker({dateFormat:"yy-mm-dd"});
-      $("#datepicker2").datepicker({dateFormat:"yy-mm-dd"});
-    });
+<script src='queryHelpers.js'></script>
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+<script>
+$(function() {
+ $("#datepicker1").datepicker({dateFormat:"yy-mm-dd"});
+ $("#datepicker2").datepicker({dateFormat:"yy-mm-dd"});
+});
 </script>
+</body>
 </html>
