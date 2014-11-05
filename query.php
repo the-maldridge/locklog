@@ -8,12 +8,15 @@ $config = getConfig("buildings.json");
 <head>
 <title>LockLog Query</title>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<?php
-  if(!isset($_GET["run"])) {
-?>
+<div id="outer">
+<div id="inner">
+<div id="content" style="width:600px;">
+<center>
+<?php if(!isset($_GET["run"])) { ?>
 <table>
 <tr><td colspan="2">Filter By:</td></tr>
   <tr>
@@ -137,7 +140,6 @@ $config = getConfig("buildings.json");
     mysql_close($dbcon);
   }
 ?>
-<script src='queryHelpers.js'></script>
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
 <script>
@@ -163,5 +165,9 @@ function toggleCollapse(checkbox, id, inner, offState) {
     }
 }
 </script>
+</center>
+</div>
+</div>
+</div>
 </body>
 </html>
