@@ -17,8 +17,9 @@ $config = getConfig("buildings.json");
 <div id="content" style="width:600px;">
 <center>
 <?php if(!isset($_GET["run"])) { ?>
+<table><tr><td>
 <table>
-<tr><td colspan="2">Filter By:</td></tr>
+<tr><th colspan="2">Filter By:</th></tr>
   <tr>
   <td>Building:</td>
   <td><input type='checkbox' id='bldg' onclick='toggleCollapse("bldg", "bldgHTML", "bldgSelect", "")'></td>
@@ -49,6 +50,8 @@ $config = getConfig("buildings.json");
   <td><input type='checkbox' id='dateBefore' onclick='toggleCollapse("dateBefore", "dateBeforeHTML", "datepicker2", "")'></td>
   </tr>
 </table>
+
+</td><td>
 
   <form method="GET" action="query.php">   
   <table>
@@ -87,6 +90,7 @@ $config = getConfig("buildings.json");
   </tr>
 
   </table>
+</td></tr></table>
   </form>  
 <?php
   } else {
