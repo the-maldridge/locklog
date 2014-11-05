@@ -1,7 +1,7 @@
-function useName() {
-    if(document.getElementById('useName').checked) {
-	document.getElementById('name').innerHTML= "Name: <input type='text' name='name'></input>"
+function toggleCollapse(checkbox, id) {
+    if(document.getElementById(checkbox).checked) {
+	document.getElementById(id).style.visibility="visible"
     } else {
-	document.getElementById('name').innerHTML= "Name: <input type='text' name='name'></input>"
+	document.getElementById(id).style.visibility="collapse"
     }
 }
