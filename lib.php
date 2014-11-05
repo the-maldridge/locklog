@@ -90,11 +90,11 @@ function emailRLC($RLC, $RLC_email, $resident, $res_id, $SERVER, $PATH, $EMAILSU
 }
 function getBuilding($config, $prompt) {
   if(!isset($_COOKIE["bldg"]) || $prompt) {
-    echo '<tr><td>Building</td><td><select name="bldg">';
+    echo '<td>Building</td><td><select name="bldg">';
     foreach($config["buildings"] as $buildingKey => $buildingInfo) {
       echo '<option value="'.$buildingKey.'">'.$buildingInfo["disptext"].'</option>';
     }
-    echo '</select></td></tr>';
+    echo '</select></td>';
   } else {
     $bldg=$_COOKIE["bldg"];
     echo "<input name='bldg' type='hidden' value='$bldg'>";

@@ -39,7 +39,9 @@ if(empty($formState) || $formState=="Reset") {
   echo "<tr><td>PA Name</td><td><input name='PA_name' type='text'></td></tr>";
 
   //building
+  echo '<tr>';
   getBuilding($config, false);
+  echo '</tr>';
 
   //resident info
   echo "<tr><td>Resident Name</td><td><input name='res_name' type='text'></td></tr>";
