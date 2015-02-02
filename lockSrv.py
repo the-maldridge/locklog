@@ -1,33 +1,24 @@
 #!/usr/bin/env python
 
-import logging, os
-from flask import Flask, session, redirect, url_for, escape, request
-app = Flask(__name__)
+import logging, os, json
+from flask import Flask, session, redirect, url_for, escape, request, render_template
+app = Flask(__name__, static_url_path='/static/')
 app.secret_key = os.urandom(24)
-
-
-def authorized():
-	if 'username' not in session:
-		logging.debug("User not logged in, redirecting")
-		return false
-	else:
-		logging.debug("User already logged in")
-		return true
 
 @app.route("/")
 def index():
 	if 'username' in session:
-		return 'Logged in as %s' % escape(session['username'])
+		return render_template('form.html', PA_NAME=session['username'])
 	return 'You are not logged in'
 
-@app.route("/authenticate", methods=["POST"])
+@app.route("/authenticate", methods=["GET","POST"])
 def authenticate():
 	if request.method == 'POST':
 		session['username']=request.form['username']
-		session['building']=request.form['building']
+		#session['building']=request.form['building']
 		return redirect(url_for('index'))
 	else:
-		return "You cannot access this page directly!"
+		return app.send_static_file('login.html')
 
 @app.route('/logout')
 def logout():
@@ -37,4 +28,5 @@ def logout():
 
 if __name__ == "__main__":
 	logging.basicConfig(level=logging.DEBUG)
-        app.run()
+	app.debug=True
+        app.run(host='0.0.0.0')
