@@ -14,7 +14,7 @@ def index():
 		if 'username' in session:
 			return render_template('form.html', PA_NAME=session['username'])
 		else:
-			return 'You are not logged in'
+			return redirect(url_for('authenticate'))
 	elif request.method == 'POST':
 		PA = request.form['PA_name']
 		res_name = request.form['Res_name']
