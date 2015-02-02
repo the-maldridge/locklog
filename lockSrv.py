@@ -20,7 +20,7 @@ def index():
 		res_name = request.form['Res_name']
 		res_id = request.form['Res_id']
 		logging.info("Logging lockout for %s by %s", res_name, PA)
-		return "Success!"
+		return redirect(url_for('index'))
 
 @app.route("/authenticate", methods=["GET","POST"])
 def authenticate():
