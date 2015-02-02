@@ -1,13 +1,34 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="/static/styles.css">
     <title>Lockout Log</title>
   </head>
   <body>
-    <form action="" method="POST">
-      <input type="text" name="PA_name" value="{{ PA_NAME }}">
-      <input type="text" name="Res_name">
-      <input type="text" name="Res_id">
-      <input type="submit">
-    </form>
+    <div id="outer">
+      <div id="inner">
+	<div id="content" style="width:400px;">
+	  <form action="" method="POST">
+	    <table cellpadding="4" align="center">
+	      <tr>
+		<td>PA Name:</td>
+		<td><input type="text" name="PA_name" value="{{ PA_NAME }}"></td>
+	      </tr>
+	      <tr>
+		<td>Resident Name:</td>
+		<td><input type="text" name="Res_name"></td>
+	      </tr>
+	      <tr>
+		<td>Resident ID:</td>
+		<td><input type="text" name="Res_id"></td>
+	      </tr>
+	      <tr>
+		<td colspan="2"><center><input type="submit"></center></td>
+	      </tr>
+	    </table>
+	  </form>
+	</div>
+      </div>
+    </div>
   </body>
 </html>
