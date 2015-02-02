@@ -5,11 +5,22 @@ from flask import Flask, session, redirect, url_for, escape, request, render_tem
 app = Flask(__name__, static_url_path='/static/')
 app.secret_key = os.urandom(24)
 
-@app.route("/")
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
+@app.route("/", methods=["GET","POST"])
 def index():
-	if 'username' in session:
-		return render_template('form.html', PA_NAME=session['username'])
-	return 'You are not logged in'
+	if request.method == 'GET':
+		if 'username' in session:
+			return render_template('form.html', PA_NAME=session['username'])
+		else:
+			return 'You are not logged in'
+	elif request.method == 'POST':
+		PA = request.form['PA_name']
+		res_name = request.form['Res_name']
+		res_id = request.form['Res_id']
+		logging.info("Logging lockout for %s by %s", res_name, PA)
+		return "Success!"
 
 @app.route("/authenticate", methods=["GET","POST"])
 def authenticate():
