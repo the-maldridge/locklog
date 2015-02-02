@@ -6,7 +6,7 @@ app = Flask(__name__, static_url_path='/static/')
 app.secret_key = os.urandom(24)
 
 log = logging.getLogger('werkzeug')
-log.setLevel(logging.ERROR)
+log.setLevel(logging.INFO)
 
 @app.route("/", methods=["GET","POST"])
 def index():
@@ -36,6 +36,10 @@ def logout():
 	    # remove the username from the session if it's there
 	    session.pop('username', None)
 	    return redirect(url_for('index'))
+
+@app.route('/static/<filename>')
+def serveStatic(filename):
+	return app.send_static_file(filename)
 
 if __name__ == "__main__":
 	logging.basicConfig(level=logging.DEBUG)

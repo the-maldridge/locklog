@@ -1,12 +1,30 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="/static/styles.css">
     <title>LockLog Login</title>
   </head>
   <body>
-    <form method="POST" action="">
-      <input type="text" name="username">
-      <input type="password" name="password">
-      <input type="submit" />
-    </form>
+    <div id="outer">
+      <div id="inner">
+	<div id="content" style="width:300px;">
+	  <form method="POST" action="">
+	    <table cellpadding="4" align="center">
+	      <tr>
+		<td>Username:</td>
+		<td><input type="text" size="10" name="username"></td>
+	      </tr>
+	      <tr>
+		<td>Password:</td>
+		<td><input type="password" size="10" name="password"></td>
+	      </tr>
+	      <tr>
+		<td colspan="2"><center><input type="submit" /></center></td>
+	      </tr>
+	    </table>
+	  </form>
+	</div>
+      </div>
+    </div>
   </body>
 </html>
