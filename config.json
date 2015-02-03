@@ -8,5 +8,12 @@
     },
     "common": {
 	"threshold":3
-    }
+    },
+    "database":{
+	"mode":"mysql",
+	"user":"deskworker",
+	"pass":"foobar",
+	"host":"localhost",
+	"db":"locklog"
+	}
 }
