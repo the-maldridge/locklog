@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 
-import logging, os, json
+import logging, os, json, db
 from flask import Flask, session, redirect, url_for, escape, request, render_template
 app = Flask(__name__, static_url_path='/static/')
 app.secret_key = os.urandom(24)
-
+app.uconfig = json.load(open('config.json'))
+app.database = db.Database(app.uconfig)
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.INFO)
+
 
 @app.route("/", methods=["GET","POST"])
 def index():
