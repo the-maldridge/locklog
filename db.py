@@ -71,6 +71,12 @@ class Database():
         else:
             return None
 
+    def resetLocal(self, res_id):
+        SQL="UPDATE history SET local_max=0 WHERE `res_id`=%s"
+        self.logger.debug("Resetting local max for %s", res_id)
+        self.c.execute(SQL, (res_id))
+        self.conn.commit()
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     import json
@@ -79,3 +85,4 @@ if __name__ == "__main__":
     #db.addToHistory(1234)
     db.checkHistory(1234)
     db.updateHistory(1234)
+    db.resetLocal(1234)
