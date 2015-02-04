@@ -56,14 +56,14 @@ class Database():
       self.logger.debug("Exists? " + str(exists))
 
     def updateHistory(self, res_id):
-        SQL="SELECT * FROM history WHERE `res_id`=%s"
+        SQL="SELECT `index`,total_max,local_max FROM history WHERE `res_id`=%s"
         self.logger.debug("Selecting data for id #%s", res_id)
         if self.c.execute(SQL, (res_id)):
             data = self.c.fetchone()
         logging.debug("Data: " + str(data))
         index = data[0]
-        local = data[2] + 1
-        total = data[3] + 1
+        local = data[1] + 1
+        total = data[2] + 1
         SQL="UPDATE history SET total_max=%s,local_max=%s WHERE `index`=%s"
         self.c.execute(SQL, (total, local, index))
 
