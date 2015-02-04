@@ -60,12 +60,16 @@ class Database():
         self.logger.debug("Selecting data for id #%s", res_id)
         if self.c.execute(SQL, (res_id)):
             data = self.c.fetchone()
-        logging.debug("Data: " + str(data))
-        index = data[0]
-        local = data[1] + 1
-        total = data[2] + 1
-        SQL="UPDATE history SET total_max=%s,local_max=%s WHERE `index`=%s"
-        self.c.execute(SQL, (total, local, index))
+            logging.debug("Data: " + str(data))
+            index = data[0]
+            local = data[1] + 1
+            total = data[2] + 1
+            SQL="UPDATE history SET total_max=%s,local_max=%s WHERE `index`=%s"
+            self.c.execute(SQL, (total, local, index))
+            self.conn.commit()
+            return local
+        else:
+            return None
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
