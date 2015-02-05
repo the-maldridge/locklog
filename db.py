@@ -62,8 +62,8 @@ class Database():
             data = self.c.fetchone()
             logging.debug("Data: " + str(data))
             index = data[0]
-            local = data[1] + 1
-            total = data[2] + 1
+            total = data[1] + 1
+            local = data[2] + 1
             SQL="UPDATE history SET total_max=%s,local_max=%s WHERE `index`=%s"
             self.c.execute(SQL, (total, local, index))
             self.conn.commit()
