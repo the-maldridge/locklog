@@ -21,17 +21,22 @@ def index():
 		PA = request.form['PA_name']
 		res_name = request.form['Res_name']
 		res_id = request.form['Res_id']
-		logging.info("Logging lockout for %s by %s", res_name, PA)
+		logging.info("Logging lockout for %s by %s in %s", res_name, PA, session['building'])
 		return redirect(url_for('index'))
 
 @app.route("/authenticate", methods=["GET","POST"])
 def authenticate():
 	if request.method == 'POST':
 		session['username']=request.form['username']
-		#session['building']=request.form['building']
+		session['building']=request.form['building']
+		password = request.form['password']
 		return redirect(url_for('index'))
 	else:
-		return app.send_static_file('login.html')
+		bldgs=[]
+		for key in app.uconfig['buildings'].keys():
+			bldgs.append((key, app.uconfig['buildings'][key]['disptext']))
+		logging.info("keys for login page: %s", bldgs)
+		return render_template('login.html', BLDGS=bldgs)
 
 @app.route('/logout')
 def logout():
