@@ -54,6 +54,7 @@ class Database():
       if self.c.fetchall() is not None:
           exists=True
       self.logger.debug("Exists? " + str(exists))
+      return exists
 
     def updateHistory(self, res_id):
         SQL="SELECT `index`,total_max,local_max FROM history WHERE `res_id`=%s"

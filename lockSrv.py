@@ -21,8 +21,16 @@ def index():
 		PA = request.form['PA_name']
 		res_name = request.form['Res_name']
 		res_id = request.form['Res_id']
-		logging.info("Logging lockout for %s by %s in %s", res_name, PA, session['building'])
+		logLockout(PA, session['building'], res_name, res_id)
 		return redirect(url_for('index'))
+	
+@app.route("/review", methods=["GET","POST"])
+def review():
+	if request.method == 'POST':
+		pass
+	else:
+		return app.send_static_file("review.html")
+
 
 @app.route("/authenticate", methods=["GET","POST"])
 def authenticate():
@@ -40,13 +48,27 @@ def authenticate():
 
 @app.route('/logout')
 def logout():
-	    # remove the username from the session if it's there
-	    session.pop('username', None)
-	    return redirect(url_for('index'))
+	# remove the username from the session if it's there
+	session.pop('username', None)
+	return redirect(url_for('index'))
 
 @app.route('/static/<filename>')
 def serveStatic(filename):
 	return app.send_static_file(filename)
+
+
+
+def logLockout(PA, building, res_name, res_id):
+	logging.info("Logging lockout for %s by %s in %s", res_name, PA, session['building'])
+	app.database.addLockout(PA, building, res_name, res_id)
+	if(app.database.checkHistory(res_id)):
+		lockouts = app.database.updateHistory(res_id)
+		logging.info("Update lockout for %s", res_name)
+		if lockouts > app.uconfig['common']['threshold']:
+			logging.info("Resident %s has exceeded the threshold with %s lockouts", res_name, lockouts)
+	else:
+		app.database.addToHistory(res_id)
+		logging.info("First lockout for %s", res_id)
 
 if __name__ == "__main__":
 	logging.basicConfig(level=logging.DEBUG)
