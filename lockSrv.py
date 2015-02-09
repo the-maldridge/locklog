@@ -27,9 +27,9 @@ def index():
 @app.route("/review", methods=["GET","POST"])
 def review():
 	if request.method == 'POST':
-		pass
+		return "Form Data: " + str(request.form)
 	else:
-		return app.send_static_file("review.html")
+		return render_template("review.html", BLDGS=defineBuildings())
 
 
 @app.route("/authenticate", methods=["GET","POST"])
@@ -40,11 +40,7 @@ def authenticate():
 		password = request.form['password']
 		return redirect(url_for('index'))
 	else:
-		bldgs=[]
-		for key in app.uconfig['buildings'].keys():
-			bldgs.append((key, app.uconfig['buildings'][key]['disptext']))
-		logging.info("keys for login page: %s", bldgs)
-		return render_template('login.html', BLDGS=bldgs)
+		return render_template('login.html', BLDGS=defineBuildings())
 
 @app.route('/logout')
 def logout():
@@ -57,6 +53,13 @@ def serveStatic(filename):
 	return app.send_static_file(filename)
 
 
+
+def defineBuildings():
+	bldgs=[]
+	for key in app.uconfig['buildings'].keys():
+		bldgs.append((key, app.uconfig['buildings'][key]['disptext']))
+	logging.info("keys for login page: %s", bldgs)
+	return bldgs
 
 def logLockout(PA, building, res_name, res_id):
 	logging.info("Logging lockout for %s by %s in %s", res_name, PA, session['building'])
